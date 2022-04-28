@@ -1,15 +1,16 @@
 # 14501_퇴사
-# 2022-04-27
+# 2022-04-28
 
 
 def counselor(idx, cost):
     global max_cost
-    if idx == N-1:
+
+    if idx == N:
         if cost > max_cost:
             max_cost = cost
         return
     else:
-        if idx + T[idx] <= N-1:
+        if idx + T[idx] <= N:
             counselor(idx+T[idx], cost+P[idx])
         else:
             counselor(idx+1, cost)
