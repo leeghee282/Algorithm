@@ -1,5 +1,5 @@
 # 17140_이차원-배열과-연산
-# 2022-06-27
+# 2022-06-28
 
 
 def R(arr):
@@ -53,49 +53,20 @@ def R(arr):
     return res
 
 
-def C(arr):
-    new_arr = []
-
-    cnt_row = len(arr)
-    cnt_col = len(arr[0])
-
-    for j in range(cnt_col):
-        new_arr_col = []
-        for i in range(cnt_row):
-            new_arr_col.append(arr[i][j])
-        new_arr.append(new_arr_col)
-
-    tmp = R(new_arr)
-
-    cnt_row = len(tmp)
-    cnt_col = len(tmp[0])
-    res = []
-
-    for j in range(cnt_col):
-        new_res_col = []
-        for i in range(cnt_row):
-            new_res_col.append(tmp[i][j])
-        res.append(new_res_col)
-
-    return res
-
-
 r, c, k = map(int, input().split())
 
 A = [list(map(int, input().split())) for _ in range(3)]
 
-ans_lst = []
+ans_lst = R(A)
 ans = -1
 
-for t in range(100):
+for t in range(101):
     if t == 0:
-        if A[r-1][c-1] == k:
-            ans = t
-            break
-        else:
-            ans_lst = R(A)
+        if r <= 3 and c <= 3:
+            if A[r-1][c-1] == k:
+                ans = t
+                break
     else:
-        print(ans_lst)
         res_row = len(ans_lst)
         res_col = len(ans_lst[0])
 
@@ -103,10 +74,12 @@ for t in range(100):
             if ans_lst[r-1][c-1] == k:
                 ans = t
                 break
+
+        if res_col <= res_row:
+            ans_lst = R(ans_lst)
         else:
-            if res_col >= res_row:
-                ans_lst = R(ans_lst)
-            else:
-                ans_lst = C(ans_lst)
+            ans_lst = list(map(list, zip(*ans_lst)))
+            ans_lst = R(ans_lst)
+            ans_lst = list(map(list, zip(*ans_lst)))
 
 print(ans)
