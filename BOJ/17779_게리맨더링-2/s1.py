@@ -3,57 +3,73 @@
 
 N = int(input())
 
-Arc = [list(map(int, input().split())) for _ in range(N)]
+Arc = [[0]*(N+1)] + [[0] + list(map(int, input().split())) for _ in range(N)]
 
-standard = []
+total = 0
+for r in range(1, N+1):
+    for c in range(1, N+1):
+        total += Arc[r][c]
 
-for r in range(1, N-1):
-    for c in range(0, N-2):
-        standard.append((r, c))
+min_ans = 99999999
 
-if N % 2 == 0:
-    tmp = N//2
-else:
-    tmp = (N//2 + 1)
+for x in range(1, N+1):
+    for y in range(1, N+1):
+        for d1 in range(1, N+1):
+            for d2 in range(1, N+1):
+                if x + d1 + d2 > N:
+                    continue
+                if y - d1 < 1:
+                    continue
+                if y + d2 > N:
+                    continue
+                
+                area = [[0]*(N+1) for _ in range(N+1)]
+                area[x][y] = 5
+                
+                for i in range(1, d1+1):
+                    area[x + i][y - i] = 5
+                for i in range(1, d2+1):
+                    area[x + i][y + i] = 5
+                for i in range(1, d2+1):
+                    area[x + d1 + i][y - d1 + i] = 5
+                for i in range(1, d1+1):
+                    area[x + d2 + i][y + d2 - i] = 5
 
-for x, y in standard:
-    d1 = r % tmp
-    d2 = N-2 - c
+                people = [0] * 5
 
-    for d1 in range(1, d1+1):
-        for d2 in range(1, d2+1):
-            area = [[0]*N for _ in range(N)]
-            nr, nc = x, y
+                for r in range(1, x + d1):
+                    for c in range(1, y + 1):
+                        if area[r][c] == 5:
+                            break
+                        else:
+                            people[0] += Arc[r][c]
 
-            for _ in range(d1):
-                nr -= 1
-                nc += 1
-                area[nr][nc] = 5
-            for _ in range(d2):
-                nr += 1
-                nc += 1
-                area[nr][nc] = 5
-            for _ in range(d1):
-                nr += 1
-                nc -= 1
-                area[nr][nc] = 5
-            for _ in range(d2):
-                nr -= 1
-                nc -= 1
-                area[nr][nc] = 5
+                for r in range(1, x + d2 + 1):
+                    for c in range(N, y, -1):
+                        if area[r][c] == 5:
+                            break
+                        else:
+                            people[1] += Arc[r][c]
 
-            for r in range(N):
-                for c in range(N):
-                    if 
-            
-            for r in range(N):
-                for c in range(N):
-                    if area[r][c] != 5:
-                        if 0 <= r < y and 0 <= c <= x+d1:
-                            area[r][c] = 1
-                        elif 0 <= r <= y and x+d1 < c < N:
-                            area[r][c] = 2
-                        elif y <= r < N and 0 < c < x+d1:
-                            area[r][c] = 3
-                        elif y < r < N and x+d1 <= c < N:
-                            area[r][c] = 4
+                for r in range(x + d1, N + 1):
+                    for c in range(1, y - d1 + d2):
+                        if area[r][c] == 5:
+                            break
+                        else:
+                            people[2] += Arc[r][c]
+
+                for r in range(x + d2 + 1, N + 1):
+                    for c in range(N, y - d1 + d2 - 1, -1):
+                        if area[r][c] == 5:
+                            break
+                        else:
+                            people[3] += Arc[r][c]
+
+                people[4] = total - sum(people)
+
+                ans = max(people) - min(people)
+                
+                if ans < min_ans:
+                    min_ans = ans
+
+print(min_ans)
